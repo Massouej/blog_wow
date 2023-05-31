@@ -1,0 +1,13 @@
+package fr.simplon.blog_wow;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class BlogWowApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(BlogWowApplication.class, args);
+	}
+
+}

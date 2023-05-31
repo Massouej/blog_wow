@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Créez un article</title>
+  <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-pzjw8H0d6VlTcf6p8q0+VnAR6m0GgF2i6q/d5e3w7rFto5h9RZal+t7ejp4Q6kkq"
+        crossorigin="anonymous">
+</head>
+<body>
+<div id="form-new-article" th:fragment="new-article (newArticle)" class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6 mt-4">
+      <h4>Créez un article</h4>
+
+      <form class="col" id="form-creation-article" action="#" method="post" th:object="${newArticle}">
+        <div class="form-group">
+          <label class="form-label" for="title">Titre :</label>
+          <input class="form-control" id="title" type="text" th:field="*{title}" required placeholder="Ex. : Ragnaros">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="description">Description :</label>
+          <textarea class="form-control" id="description" th:field="*{description}" required
+                    placeholder="Ex. : Le combat se compose de différentes phases ..." rows="5"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="createdBy">Votre nom :</label>
+          <input class="form-control" id="createdBy" type="text" th:field="*{createdBy}" required placeholder="Ex. : John">
+        </div>
+        <div class="form-group">
+          <button id="btn-reset-polling" class="btn" type="reset">Effacer</button>
+          <button id="btn-create-polling" class="btn btn-succes" type="submit">Ajouter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

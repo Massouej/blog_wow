@@ -1,10 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Blog World Of Warcraft</title>
+  <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
 </head>
+<header th:replace="~{fragment-header :: header}">
+  <h1>World Of Warcraft</h1>
+</header>
 <body>
-$END$
+<h2>Nouvel utilisateur</h2>
+<div class="container">
+  <form th:object="${user}" th:action="@{/admin/createUser}" method="post">
+
+    <div class="error" th:if="${#fields.hasGlobalErrors()}">
+      <p th:each="error : ${#fields.globalErrors()}" th:text="${error}"></p>
+    </div>
+
+    <div class="form-group">
+      <label for="login">Login :</label>
+      <input class="form-control" id="login" type="text" name="login" th:field="*{login}">
+      <span class="error" th:errors="*{login}">Error</span>
+    </div>
+
+    <div class="form-group">
+      <label th:for="password">Mot de passe :</label>
+      <input class="form-control" id="password" type="password" name="password" th:field="*{password}">
+      <span class="error" th:errors="*{password}">Error</span>
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm :</label>
+      <input class="form-control" id="confirmPassword" type="password" name="confirmPassword" th:field="*{confirmPassword}">
+      <span class="error" th:errors="*{confirmPassword}">Error</span>
+    </div>
+    <div class="form-group">
+      <button type="button" class="btn btn-info" onclick="window.location='/'">Annuler</button>
+      <button type="submit" class="btn btn-success">Créer</button>
+    </div>
+  </form>
+</div>
 </body>
 </html>

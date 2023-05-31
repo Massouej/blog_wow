@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Utilisateur</title>
+  <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
 </head>
 <body>
-$END$
+<div th:fragment="single-user (user)">
+  <tr>
+    <form class="form-signin" th:action="@{/admin/updateUser/{id}(id=${user.username})}" method="GET">
+      <td th:text="${user.username}">John</td>
+      <td>
+        <button class="btn btn-primary" type="submit">Modifier</button>
+      </td>
+    </form>
+  </tr>
+</div>
 </body>
 </html>

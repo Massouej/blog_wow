@@ -1,10 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Article</title>
+  <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
 </head>
 <body>
-$END$
+<div th:fragment="single-article (article)" class="box-article">
+  <div class="article-text-content">
+    <div class="article-desc">
+      <a tooltip="Voir l'article en entier'" th:if="${article.createdAt <= #temporals.createNow()}"
+         th:href="@{/articles/{id}(id=${article.id})}"
+         th:text="${article.description}">Article</a>
+      <span th:if="${article.createdAt > #temporals.createNow()}" th:text="${article.description}">Article</span>
+    </div>
+    <div class="article-titre" th:text="${article.title}"></div>
+    <div class="article-dates">
+      Créé par <span th:text="${article.createdBy}">John</span>
+      le <span th:text="${#temporals.format(article.createdAt, 'dd/MM/yyyy à HH:mm:ss')}">04/01/2023</span>,
+    </div>
+
+    <div class="article-description" th:text="${article.description}"></div>
+
+    <!-- Vérifier s'il y a des commentaires associés à l'article -->
+    <div th:if="${article.commentaires.size() > 0}">
+      <h3>Commentaires :</h3>
+      <ul>
+        <!-- Parcourir la liste des commentaires de l'article -->
+        <li th:each="commentaire : ${article.commentaires}">
+          <p th:text="${commentaire.description}"></p>
+          <!-- Afficher les autres informations du commentaire -->
+        </li>
+      </ul>
+    </div>
+
+    <div th:if="${article.commentaires.size() == 0}">
+      <p>Aucun commentaire pour cet article.</p>
+    </div>
+  </div>
+</div>
 </body>
 </html>

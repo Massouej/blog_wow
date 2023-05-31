@@ -1,10 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Identification</title>
+  <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
 </head>
 <body>
-$END$
+<main class="form-signin">
+  <form method="post" th:action="@{/login}">
+    <h1 class="form-signin-heading">Veuillez vous identifier</h1>
+    <div class="alert alert-danger" role="alert" th:if="${param.error}">Mot de passe ou identifiant invalides.</div>
+    <div class="alert alert-success" role="alert" th:if="${param.logout}">Vous êtes bien déconnecté.</div>
+    <div class="form-group">
+      <label class="form-label" for="username">Login</label>
+      <input class="form-control" type="text" id="username" name="username" placeholder="Username" required=""
+             autofocus="">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="password">Password</label>
+      <input class="form-control" type="password" id="password" name="password" placeholder="Password"
+             required="">
+    </div>
+    <div class="form-group">
+      <button class="btn btn-lg btn-success btn-block" type="submit">Se connecter</button>
+      <button class="btn btn-lg btn-info btn-block" id="btn-subscribe" type="button">S'inscrire</button>
+    </div>
+  </form>
+</main>
 </body>
+<script src="../static/articles.js" th:src="@{/articles.js}" type="module"></script>
 </html>

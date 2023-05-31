@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Pagination</title>
+  <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
 </head>
 <body>
-$END$
+<span class="pagination" th:fragment="pagination(page, pageCount)">
+    Pages : &nbsp;&nbsp;
+    <th:block th:each="i : ${#numbers.sequence(1, pageCount)}">
+        <strong class="page page-courante" th:if="${page == i -1}" th:text="${i}"></strong>
+        <a class="page" th:if="${page != i -1}" th:href="@{/(page=${i}-1)}" th:text="${i}"></a>
+        <span th:if="${i!=pageCount}" th:text="'&nbsp;|'"></span>
+    </th:block>
+    <span class="nb-resultats-par-page">Nombre de résultats par page : 5</span>
+</span>
 </body>
 </html>

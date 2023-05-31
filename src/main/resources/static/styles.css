@@ -1,0 +1,13 @@
+.navbar-logo {
+    width: 150px;
+    height: 70px;
+    background: url("/Logo_Jonathan.png") no-repeat center center;
+    background-size: contain;
+}
+
+.title-bar {
+    text-align: center;
+    margin-top: 80px;
+}
+
+

@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Modification d'un commentaire</title>
 </head>
 <body>
-$END$
+<h1>Modification d'un commentaire</h1>
+<form action="/commentaires/{commentaireId}/edit" method="post" th:object="${commentaire}">
+    <input type="hidden" name="commentaireId" th:value="${commentaire.id}"/>
+    <div>
+        <label>Description:</label>
+        <textarea name="description" th:field="*{description}"></textarea>
+        <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+    </div>
+
+    <button type="submit">Modifier</button>
+</form>
 </body>
 </html>

@@ -121,6 +121,21 @@ public class WebController {
         return openArticles;
     }
 
+    /**
+     * Affiche le formulaire de création d'article.
+     * @param model Le modèle Thymeleaf pour transmettre les données à la vue.
+     * @return Le nom de la vue Thymeleaf pour afficher le formulaire de création d'article.
+     */
+    @GetMapping("/admin/create_new_article")
+    public String showCreateArticleForm(Model model) {
+        model.addAttribute("newArticle", new Article());
+        return "admin/create_new_article";
+    }
+
+
+
+
+
 
 
 }

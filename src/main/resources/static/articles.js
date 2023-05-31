@@ -83,7 +83,7 @@ function updateListWith(article ) {
 }
 
 /**
- * Envoie les données de l'article vers l'URL "/api/sondages" avec méthode POST.
+ * Envoie les données de l'article vers l'URL "/api/articles" avec méthode POST.
  *
  * @param {Event} event l'évènement de click.
  */

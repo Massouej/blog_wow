@@ -15,6 +15,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+
+
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,7 +54,8 @@ public class ArticleController {
     @ApiResponse(responseCode = "201", description = "La ressource a été trouvée avec succès.")
     @ApiResponse(responseCode = "400", description = "En cas d'erreur de validation.")
     public ResponseEntity<?> createArticle(
-            @Valid @RequestBody Article article, BindingResult validation, HttpServletRequest request) {
+            @Valid @ModelAttribute("article") Article article, BindingResult validation,
+            HttpServletRequest request) {
         if (validation.hasErrors()) // Vérifie les erreurs de validation.
         {
             List<String> errors = validation.getAllErrors().stream()//

@@ -98,17 +98,15 @@ function createNewPolling(event ) {
     // On transforme les champs du formulaire au format JSON
     let form = document.getElementById(FORM_CREATE_ARTICLE);
     let formData = new FormData(form);
-    let json = JSON.stringify(Object.fromEntries(formData.entries()));
+
 
     console.debug("Sending data to server : \n" + json);
 
     // Envoi des données au WebService
     fetch(BASEURL_WEBSERVICE_ARTICLES, {
         method: 'POST',
-        body: json,
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        body: formData,
+
     }).then(response => {
         if (response.ok) {
             // La requête s'est bien passée

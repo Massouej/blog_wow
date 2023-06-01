@@ -11,10 +11,10 @@
 <body>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-6 mt-4">
+        <div id="form-new-article" th:fragment="new-article (newArticle)" class="col-md-6 mt-4">
             <h4>Créez un article</h4>
 
-            <form id="form-creation-article" action="/api/articles" method="post" th:object="${newArticle}">
+            <form id="form-creation-article" action="/api/articles" method="post" th:object="${newArticle}" enctype="multipart/form-data">
                 <div class="form-group">
                     <label class="form-label" for="title">Titre :</label>
                     <input class="form-control" id="title" type="text" th:field="*{title}" required

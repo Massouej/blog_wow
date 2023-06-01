@@ -53,8 +53,10 @@ public class WebController {
     {
         fillModelWithPaginationAttributes(model, page);
         model.addAttribute("newArticle", new Article());
+
         return "index";
     }
+
 
     /**
      * Fournit le HTML correspondant à la liste de tous les articles (avec pagination).

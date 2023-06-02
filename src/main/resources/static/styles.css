@@ -1,7 +1,7 @@
 .navbar-logo {
     width: 150px;
     height: 70px;
-    background: url("/Logo_Jonathan.png") no-repeat center center;
+    background: url("Logo_Jonathan.png") no-repeat center center;
     background-size: contain;
 }
 
@@ -33,4 +33,62 @@
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#header {
+    background-color: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#articles {
+    position: relative;
+    height: 100%;
+}
+
+.pagination {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.pagination a {
+    color: #007bff;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.pagination a:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.pagination .active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.image-container {
+    position: relative;
+    z-index: 0;
+}
+
+.image-left {
+    left: 0;
+    position: fixed;
+    top: 50%;
+    width: 50px;
+    height: 100px;
+    background-size: cover;
+    background-image: url("logo_horde.png");
+}
+
+.image-right {
+    right: 0;
+    position: fixed;
+    top: 50%;
+    width: 50px;
+    height: 100px;
+    background-size: cover;
+    background-image: url("logo_alliance_cute.png");
 }

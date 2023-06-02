@@ -113,14 +113,11 @@ public class WebController {
      * @return
      */
 
-    private List<Article> getArticles(int page)
-    {
-        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_COUNT, Sort.by("createdAt").ascending());
-        Page<Article> all = mArticleRepository.findAllOrderByCreatedAt(pageable);
-        List<Article> openArticles = all.filter(article -> article.getCreatedAt().compareTo(LocalDateTime.now()) > 0).stream().collect(Collectors.toList());
-        List<Article> closedArticles = all.filter(article -> article.getCreatedAt().compareTo(LocalDateTime.now()) < 0).stream().collect(Collectors.toList());
-        openArticles.addAll(closedArticles);
-        return openArticles;
+    private List<Article> getArticles(int page) {
+        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_COUNT, Sort.by("createdAt").descending());
+        Page<Article> pageResult = mArticleRepository.findAllOrderByCreatedAt(pageable);
+        List<Article> articles = pageResult.getContent();
+        return articles;
     }
 
     /**
@@ -132,6 +129,13 @@ public class WebController {
     public String showCreateArticleForm(Model model) {
         model.addAttribute("newArticle", new Article());
         return "admin/create_new_article";
+    }
+
+    @GetMapping("/view/articles")
+    public String articlesPage(Model model) {
+        List<Article> articles = mArticleRepository.findAll();
+        model.addAttribute("articles", articles);
+        return "articles";
     }
 
 

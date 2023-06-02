@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Blog World Of Warcraft</title>
     <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
 </head>
@@ -13,9 +12,9 @@
 </div>
 
 
-<div id="articles" th:fragment="all-articles">
+<div id="articles" th:fragment="all-articles" class="articles-container row justify-content-center">
     <th:block th:each="article : ${articles}">
-        <div th:replace="~{fragment-article :: single-article(article=${article})}"></div>
+        <div th:replace="~{fragment-article :: single-article(article=${article})}" class="col-md-6 mb-4"></div>
     </th:block>
 </div>
 

@@ -6,34 +6,39 @@
 </head>
 <body>
 <div th:fragment="single-article (article)" class="box-article">
-  <div class="article-text-content">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="box-article">
+        <div class="article-text-content">
 
-    <div class="article-titre" th:text="${article.title}"></div>
-    <div class="article-dates">
-      Créé par <span th:text="${article.createdBy}">John</span>
-      le <span th:text="${#temporals.format(article.createdAt, 'dd/MM/yyyy à HH:mm:ss')}">04/01/2023</span>,
-    </div>
+          <h2 class="article-titre" th:text="${article.title}"></h2>
+          <div class="article-dates">
+            Créé par <span th:text="${article.createdBy}">John</span>
+            le <span th:text="${#temporals.format(article.createdAt, 'dd/MM/yyyy à HH:mm:ss')}">04/01/2023</span>
+          </div>
 
-    <div class="article-description">
-      <p th:text="${article.description}"></p>
-      <a th:if="${article.createdAt <= #temporals.createNow()}"
-         th:href="@{/articles/{id}(id=${article.id})}">Lire la suite</a>
-    </div>
+          <div class="article-description">
+            <p th:text="${article.description}"></p>
+            <a th:href="@{/articles/{id}(id=${article.id})}" class="btn btn-primary">Lire la suite</a>
+          </div>
 
-    <!-- Vérifier s'il y a des commentaires associés à l'article -->
-    <div th:if="${article.commentaires.size() > 0}">
-      <h3>Commentaires :</h3>
-      <ul>
-        <!-- Parcourir la liste des commentaires de l'article -->
-        <li th:each="commentaire : ${article.commentaires}">
-          <p th:text="${commentaire.description}"></p>
-          <!-- Afficher les autres informations du commentaire -->
-        </li>
-      </ul>
-    </div>
+          <!-- Vérifier s'il y a des commentaires associés à l'article -->
+          <div th:if="${article.commentaires.size() > 0}">
+            <h3>Commentaires :</h3>
+            <ul>
+              <!-- Parcourir la liste des commentaires de l'article -->
+              <li th:each="commentaire : ${article.commentaires}">
+                <p th:text="${commentaire.description}"></p>
+                <!-- Afficher les autres informations du commentaire -->
+              </li>
+            </ul>
+          </div>
 
-    <div th:if="${article.commentaires.size() == 0}">
-      <p>Aucun commentaire pour cet article.</p>
+          <div th:if="${article.commentaires.size() == 0}">
+            <p>Aucun commentaire pour cet article.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

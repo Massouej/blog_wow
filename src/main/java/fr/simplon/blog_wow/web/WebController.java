@@ -85,8 +85,8 @@ public class WebController {
     public String fragmentArticle(@PathVariable Long id, Model model)
     {
         Optional<Article> article = mArticleRepository.findById(id);
-        model.addAttribute("article", article.get());
-        return "fragment-article :: single-article";
+        model.addAttribute("singleArticle", article.orElse(null));
+        return "single-article";
     }
 
     /**
@@ -137,6 +137,8 @@ public class WebController {
         model.addAttribute("articles", articles);
         return "articles";
     }
+
+
 
 
 

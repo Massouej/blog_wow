@@ -19,7 +19,7 @@
 
           <div class="article-description">
             <p th:text="${article.description}"></p>
-            <a th:href="@{/articles/{id}(id=${article.id})}" class="btn btn-primary">Lire la suite</a>
+            <a th:href="@{/fragments/articles/{id}(id=${article.id})}" class="btn btn-primary">Lire la suite</a>
           </div>
 
           <!-- Vérifier s'il y a des commentaires associés à l'article -->

@@ -53,25 +53,6 @@ public class CommentaireController {
         return "commentaires";
     }
 
-    /**
-     * Affiche le formulaire de création d'un commentaire.
-     *
-     * @param articleId L'identifiant de l'article auquel le commentaire sera associé.
-     * @param model     Le modèle Thymeleaf.
-     * @return La page de création d'un commentaire.
-     */
-    @GetMapping("/articles/{articleId}/commentaires/create")
-    public String showCreateCommentaireForm(@PathVariable Long articleId, Model model) {
-        Optional<Article> article = mRepository.findById(articleId);
-        if (article.isPresent()) {
-            Commentaire commentaire = new Commentaire();
-            commentaire.setArticle(article.get());
-            model.addAttribute("commentaire", commentaire);
-        } else {
-            throw new RecordNotFoundException(articleId);
-        }
-        return "create-commentaire";
-    }
 
     /**
      * Traite la soumission du formulaire de création d'un commentaire.

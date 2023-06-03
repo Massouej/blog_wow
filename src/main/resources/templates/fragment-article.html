@@ -1,46 +1,67 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Article</title>
-  <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
+    <title>Article</title>
+    <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
 </head>
 <body>
 <div th:fragment="single-article (article)" class="box-article">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="box-article">
-        <div class="article-text-content">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="box-article">
+                <div class="article-text-content">
 
-          <h2 class="article-titre" th:text="${article.title}"></h2>
-          <div class="article-dates">
-            Créé par <span th:text="${article.createdBy}">John</span>
-            le <span th:text="${#temporals.format(article.createdAt, 'dd/MM/yyyy à HH:mm:ss')}">04/01/2023</span>
-          </div>
+                    <h2 class="article-titre" th:text="${article.title}"></h2>
+                    <div class="article-dates">
+                        Créé par <span th:text="${article.createdBy}">John</span>
+                        le <span
+                            th:text="${#temporals.format(article.createdAt, 'dd/MM/yyyy à HH:mm:ss')}">04/01/2023</span>
+                    </div>
 
-          <div class="article-description">
-            <p th:text="${article.description}"></p>
-            <a th:href="@{/fragments/articles/{id}(id=${article.id})}" class="btn btn-primary">Lire la suite</a>
-          </div>
+                    <div class="article-description">
+                        <p th:text="${article.description}"></p>
+                        <a th:href="@{/fragments/articles/{id}(id=${article.id})}" id="read-more-link" class="btn btn-primary">Lire la
+                            suite</a>
+                    </div>
 
-          <!-- Vérifier s'il y a des commentaires associés à l'article -->
-          <div th:if="${article.commentaires.size() > 0}">
-            <h3>Commentaires :</h3>
-            <ul>
-              <!-- Parcourir la liste des commentaires de l'article -->
-              <li th:each="commentaire : ${article.commentaires}">
-                <p th:text="${commentaire.description}"></p>
-                <!-- Afficher les autres informations du commentaire -->
-              </li>
-            </ul>
-          </div>
+                    <!-- Vérifier s'il y a des commentaires associés à l'article -->
+                    <div th:if="${article.commentaires.size() > 0}">
+                        <h3>Commentaires :</h3>
+                        <ul>
+                            <!-- Parcourir la liste des commentaires de l'article -->
+                            <li th:each="commentaire : ${article.commentaires}">
+                                <p th:text="${commentaire.description}"></p>
+                                <!-- Afficher les autres informations du commentaire -->
+                            </li>
+                        </ul>
+                    </div>
 
-          <div th:if="${article.commentaires.size() == 0}">
-            <p>Aucun commentaire pour cet article.</p>
-          </div>
+                    <div th:if="${article.commentaires.size() == 0}">
+                        <p>Aucun commentaire pour cet article.</p>
+                    </div>
+                    <!-- Formulaire de création de commentaires -->
+                    <h3>Ajouter un commentaire :</h3>
+                    <form th:action="@{/api/commentaires}" th:object="${commentaire}" method="post"
+                          id="form-create-commentaire">
+
+                        <input type="hidden" name="articleId" th:value="${article.id}"/>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description:</label>
+                            <textarea id="description" name="description" class="form-control"
+                                      th:field="*{description}"></textarea>
+                            <span class="text-danger" th:if="${#fields.hasErrors('description')}"
+                                  th:errors="*{description}"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Ajouter un commentaire</button>
+                    </form>
+
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
+
 </body>
 </html>

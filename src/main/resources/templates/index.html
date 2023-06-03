@@ -14,9 +14,9 @@
 
 
 <div id="articles" th:fragment="all-articles" class="articles-container row justify-content-center">
-    <th:block th:each="article : ${articles}">
+    <div th:each="article : ${articles}">
         <div th:replace="~{fragment-article :: single-article(article=${article})}" class="col-md-6 mb-4"></div>
-    </th:block>
+    </div>
 </div>
 <!--<div class="image-container">
     <div class="image-left"></div>

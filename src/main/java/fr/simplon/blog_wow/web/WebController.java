@@ -1,7 +1,9 @@
 package fr.simplon.blog_wow.web;
 
+import fr.simplon.blog_wow.api.RecordNotFoundException;
 import fr.simplon.blog_wow.dao.ArticleRepository;
 import fr.simplon.blog_wow.entity.Article;
+import fr.simplon.blog_wow.entity.Commentaire;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,10 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 /**
  * Contrôleur pour URLs qui retournent des pages HTML sans JSON
@@ -49,10 +51,11 @@ public class WebController {
 
     @GetMapping(path = {"/", "/index"})
     public String index(
-        @RequestParam(required = false, defaultValue = "0") Integer page, Model model)
+            @RequestParam(required = false, defaultValue = "0") Integer page, Model model)
     {
         fillModelWithPaginationAttributes(model, page);
         model.addAttribute("newArticle", new Article());
+        model.addAttribute("commentaire", new Commentaire());
 
         return "index";
     }
@@ -85,7 +88,14 @@ public class WebController {
     public String fragmentArticle(@PathVariable Long id, Model model)
     {
         Optional<Article> article = mArticleRepository.findById(id);
-        model.addAttribute("singleArticle", article.orElse(null));
+        if (article.isPresent()) {
+            model.addAttribute("singleArticle", article.get());
+            Commentaire commentaire = new Commentaire();
+            commentaire.setArticle(article.get());
+            model.addAttribute("commentaire", commentaire);
+        } else {
+            throw new RecordNotFoundException(id);
+        }
         return "single-article";
     }
 
@@ -131,19 +141,32 @@ public class WebController {
         return "admin/create_new_article";
     }
 
+    /**
+     * Affiche le formulaire de création d'un commentaire.
+     *
+     * @param articleId L'identifiant de l'article auquel le commentaire sera associé.
+     * @param model     Le modèle Thymeleaf.
+     * @return La page de création d'un commentaire.
+     */
+    @GetMapping("/articles/{articleId}/commentaires/create")
+    public String showCreateCommentaireForm(@PathVariable Long articleId, Model model) {
+        Optional<Article> article = mArticleRepository.findById(articleId);
+        if (article.isPresent()) {
+            Commentaire commentaire = new Commentaire();
+            commentaire.setArticle(article.get());
+            model.addAttribute("commentaire", commentaire);
+            model.addAttribute("articleId", articleId);
+        } else {
+            throw new RecordNotFoundException(articleId);
+        }
+        return "create-commentaire";
+    }
+
+
     @GetMapping("/view/articles")
     public String articlesPage(Model model) {
         List<Article> articles = mArticleRepository.findAll();
         model.addAttribute("articles", articles);
         return "articles";
     }
-
-
-
-
-
-
-
-
-
 }

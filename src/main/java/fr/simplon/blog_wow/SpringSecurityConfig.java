@@ -60,7 +60,7 @@ public class SpringSecurityConfig implements WebMvcConfigurer {
         return http.csrf().disable() // Pour l'instant, on désactive la protection CSRF
                 .authorizeHttpRequests(authorize -> authorize//
                         .requestMatchers(HttpMethod.GET,"/","/index").permitAll()
-                        .requestMatchers(HttpMethod.GET,"view/articles").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/view/articles").permitAll()
                         .requestMatchers(HttpMethod.GET,"/fragments/articles/**").authenticated() //
                         .requestMatchers(HttpMethod.PUT).authenticated() //
                         .requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN") //

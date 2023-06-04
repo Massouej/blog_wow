@@ -4,6 +4,7 @@ import fr.simplon.blog_wow.api.RecordNotFoundException;
 import fr.simplon.blog_wow.dao.ArticleRepository;
 import fr.simplon.blog_wow.entity.Article;
 import fr.simplon.blog_wow.entity.Commentaire;
+import jakarta.servlet.ServletOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -171,6 +172,8 @@ public class WebController {
     public String articlesPage(Model model) {
         List<Article> articles = mArticleRepository.findAll();
         model.addAttribute("articles", articles);
+        model.addAttribute("commentaire", new Commentaire());
+
         return "articles";
     }
 }

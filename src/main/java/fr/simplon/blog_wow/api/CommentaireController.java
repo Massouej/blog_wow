@@ -64,7 +64,7 @@ public class CommentaireController {
      */
     @PostMapping("/articles/{articleId}/commentaires")
     public String createCommentaire(
-            @PathVariable Long articleId,
+            @PathVariable("articleId") Long articleId,
             @Valid @ModelAttribute("commentaire") Commentaire commentaire,
             BindingResult bindingResult,
             Principal principal) {
@@ -73,6 +73,7 @@ public class CommentaireController {
         }
 
         Optional<Article> article = mRepository.findById(articleId);
+        System.out.println(articleId);
         if (article.isPresent()) {
             commentaire.setArticle(article.get());
             commentaire.setCommentAt(LocalDateTime.now());
@@ -83,7 +84,7 @@ public class CommentaireController {
             // Enregistrez le commentaire en utilisant mCommentaireRepository
             mCommentaireRepository.save(commentaire);
 
-            return "redirect:/commentaires/" + articleId;
+            return "redirect:/articles/" + articleId;
         } else {
             throw new RecordNotFoundException(articleId);
         }

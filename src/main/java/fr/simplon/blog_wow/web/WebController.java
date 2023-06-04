@@ -56,6 +56,8 @@ public class WebController {
         fillModelWithPaginationAttributes(model, page);
         model.addAttribute("newArticle", new Article());
         model.addAttribute("commentaire", new Commentaire());
+        model.addAttribute("isHomePage", true); // pour que l'ajout d'un commentaire
+        // sois possible que sur la page de l'article.
 
         return "index";
     }
@@ -85,7 +87,7 @@ public class WebController {
      */
 
     @GetMapping(path = "/fragments/articles/{id}")
-    public String fragmentArticle(@PathVariable Long id, Model model)
+    public String fragmentArticle(@PathVariable Long id, Model model, @RequestParam(required = false, defaultValue = "false") boolean isHomePage)
     {
         Optional<Article> article = mArticleRepository.findById(id);
         if (article.isPresent()) {
@@ -93,11 +95,13 @@ public class WebController {
             Commentaire commentaire = new Commentaire();
             commentaire.setArticle(article.get());
             model.addAttribute("commentaire", commentaire);
+            model.addAttribute("isHomePage", isHomePage);
         } else {
             throw new RecordNotFoundException(id);
         }
         return "single-article";
     }
+
 
     /**
      * Remplissage du modèle avec les attributs liés à la pagination.

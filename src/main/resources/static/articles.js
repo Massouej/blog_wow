@@ -4,12 +4,13 @@
  * @param {string} Article.title
  * @param {string} Article.description
  * @param {string} Article.createdAt
- *@param {string} Article.createdBy
+ * @param {string} Article.createdBy
  */
 
 const BASEURL_WEBSERVICE_ARTICLES = "/api/articles";
 const BASEURL_FRAGMENT_ARTICLES = "/fragments/articles";
-const BASEURL_WEBSERVICE_COMMENTAIRES = "/api/commentaires";
+const BASEURL_WEBSERVICE_COMMENTAIRES = "/articles/{articleId}/commentaires";
+
 
 const BTN_CREATE = "btn-create-polling";
 const BTN_SUBSCRIBE = "btn-subscribe";
@@ -136,17 +137,20 @@ function createNewComment(event) {
     event.preventDefault();
 
     let form = event.target;
+    let articleId = form.querySelector('input[name="id_article"]').value;
     let formData = new FormData(form);
 
-    fetch(BASEURL_WEBSERVICE_COMMENTAIRES, {
+    formData.set("id_article", articleId);
+
+    fetch(BASEURL_WEBSERVICE_COMMENTAIRES.replace("{articleId}", articleId), {
         method: "POST",
         body: formData,
     })
         .then((response) => {
             if (response.ok) {
                 console.log("Commentaire ajouté avec succès !");
-                // Rafraîchir la liste des commentaires de l'article
-                // ou effectuer toute autre action nécessaire
+                // Redirection vers la page des commentaires de l'article
+                window.location.href = "/fragments/articles/" + articleId;
             } else {
                 console.error("Erreur lors de l'ajout du commentaire !");
                 response.json().then((err) => console.error(err));

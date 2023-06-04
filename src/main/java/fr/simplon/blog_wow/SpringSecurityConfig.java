@@ -27,12 +27,17 @@ import java.util.List;
 @EnableWebSecurity
 public class SpringSecurityConfig implements WebMvcConfigurer {
     private DataSource dataSource;
+
     @Autowired
-    public SpringSecurityConfig(DataSource pDataSource) { dataSource = pDataSource;}
+    public SpringSecurityConfig(DataSource pDataSource) {
+        dataSource = pDataSource;
+    }
+
     @Bean
     public AuthenticationPrincipalArgumentResolver authenticationPrincipalArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver();
     }
+
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         FormHttpMessageConverter formConverter = new FormHttpMessageConverter();
@@ -41,29 +46,37 @@ public class SpringSecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public UserDetailsManager users(DataSource dataSource) {return new JdbcUserDetailsManager(dataSource);}
+    public UserDetailsManager users(DataSource dataSource) {
+        return new JdbcUserDetailsManager(dataSource);
+    }
 
     @Bean
-    public PasswordEncoder passwordEncoder() { return PasswordEncoderFactories.createDelegatingPasswordEncoder();}
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
-    {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf().disable() // Pour l'instant, on désactive la protection CSRF
-                .authorizeHttpRequests() //
-                .requestMatchers("view/articles").permitAll()
-                .requestMatchers("/","/index").permitAll()
-                .requestMatchers("/fragments/articles/**").authenticated() //
-                .requestMatchers(HttpMethod.PUT).authenticated() //
-                .requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN") //
-                .requestMatchers("/admin/**").hasRole("ADMIN") //
-                .anyRequest().permitAll() //
-                .and() //
+                .authorizeHttpRequests(authorize -> authorize//
+                        .requestMatchers(HttpMethod.GET,"/","/index").permitAll()
+                        .requestMatchers(HttpMethod.GET,"view/articles").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/fragments/articles/**").authenticated() //
+                        .requestMatchers(HttpMethod.PUT).authenticated() //
+                        .requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN") //
+                        .requestMatchers(HttpMethod.GET,"/admin/**").hasRole("ADMIN") //
+                        .anyRequest().permitAll() //
+                        .and()
+                )
                 .httpBasic()
                 .and()
                 .formLogin() //
                 .loginPage("/login").permitAll() //
-                .and().passwordManagement(management -> management.changePasswordPage("/change-password")) //
+                .and()
+                .passwordManagement(management -> management.changePasswordPage("/change-password")) //
+                .logout()
+                .permitAll()
+                .and()
                 .build();
 
     }

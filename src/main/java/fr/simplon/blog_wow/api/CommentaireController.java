@@ -66,7 +66,8 @@ public class CommentaireController {
     public String createCommentaire(
             @PathVariable Long articleId,
             @Valid @ModelAttribute("commentaire") Commentaire commentaire,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            Principal principal) {
         if (bindingResult.hasErrors()) {
             return "create-commentaire";
         }
@@ -75,7 +76,12 @@ public class CommentaireController {
         if (article.isPresent()) {
             commentaire.setArticle(article.get());
             commentaire.setCommentAt(LocalDateTime.now());
+
+            // Récupérer le nom d'utilisateur de l'objet Principal
+            String username = principal.getName();
+            commentaire.setUser(username);
             // Enregistrez le commentaire en utilisant mCommentaireRepository
+            mCommentaireRepository.save(commentaire);
 
             return "redirect:/commentaires/" + articleId;
         } else {

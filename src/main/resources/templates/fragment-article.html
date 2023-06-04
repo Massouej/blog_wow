@@ -42,9 +42,11 @@
                     <!-- Formulaire de création de commentaires -->
                     <h3>Ajouter un commentaire :</h3>
                     <form th:action="@{/api/commentaires}" th:object="${commentaire}" method="post"
-                          id="form-create-commentaire">
+                          th:id="form-create-commentaire">
 
-                        <input type="hidden" name="articleId" th:value="${article.id}"/>
+
+                        <input type="hidden" name="id_article" th:value="${article.id}"/>
+                        <input type="hidden" name="user" th:value="${commentaire.user}">
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Description:</label>

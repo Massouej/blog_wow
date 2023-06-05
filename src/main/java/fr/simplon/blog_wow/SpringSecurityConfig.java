@@ -63,7 +63,7 @@ public class SpringSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.GET,"/view/articles").permitAll()
                         .requestMatchers(HttpMethod.GET,"/fragments/articles/**").authenticated() //
                         .requestMatchers(HttpMethod.PUT).authenticated() //
-                        .requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN") //
+                        .requestMatchers(HttpMethod.DELETE, "/admin/articles/**").hasRole("ADMIN") //
                         .requestMatchers(HttpMethod.GET,"/admin/**").hasRole("ADMIN") //
                         .anyRequest().permitAll() //
                         .and()

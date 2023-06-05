@@ -36,77 +36,51 @@
                                         </a>
 
                                         <!-- Bouton de suppression (affiché pour l'administrateur) -->
-                                        <a th:href="@{/admin/articles/{id}/delete(id=${article.id})}"
-                                           class="btn btn-danger"
-                                           th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-                                            Supprimer
-                                        </a>
+                                        <button class="btn btn-danger" data-article-id="${article.id}">Supprimer</button>
+
                                     </div>
-                                </div>
-                                <div class="commentaires-section">
-                                    <div th:if="${article.commentaires.size() > 0}">
-                                        <h3 class="title-bar text-center mb-4">Commentaires :</h3>
-                                        <ul class="list-group">
-                                            <li th:each="commentaire : ${article.commentaires}" class="list-group-item">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div class="commentaire">
-                                                        <div class="commentaire-info">
+                            </div>
+                            <div class="commentaires-section">
+                                <div th:if="${article.commentaires.size() > 0}">
+                                    <h3 class="title-bar text-center mb-4">Commentaires :</h3>
+                                    <ul class="list-group">
+                                        <li th:each="commentaire : ${article.commentaires}" class="list-group-item">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div class="commentaire">
+                                                    <div class="commentaire-info">
                                                             <span class="badge bg-secondary">Par <span
                                                                     th:text="${commentaire.user}"></span></span>
-                                                            <span class="badge bg-secondary">le <span
-                                                                    th:text="${#temporals.format(commentaire.commentAt, 'dd/MM/yyyy à HH:mm:ss')}"></span></span>
-                                                        </div>
-                                                        <p th:text="${commentaire.description}"></p>
+                                                        <span class="badge bg-secondary">le <span
+                                                                th:text="${#temporals.format(commentaire.commentAt, 'dd/MM/yyyy à HH:mm:ss')}"></span></span>
                                                     </div>
+                                                    <p th:text="${commentaire.description}"></p>
                                                 </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div th:if="${article.commentaires.size() == 0}">
-                                        <p class="text-center">Aucun commentaire pour cet article.</p>
-                                    </div>
-                                    <h3 class="title-bar text-center mb-4">Ajouter un commentaire :</h3>
-                                    <form th:action="@{'/articles/' + ${article.id} + '/commentaires'}"
-                                          th:object="${commentaire}"
-                                          method="post" th:id="form-create-commentaire" data-article-id="${article.id}">
-                                        <input type="hidden" name="id_article" th:value="${article.id}"/>
-                                        <input type="hidden" name="user" th:value="${#authentication.principal}"/>
-                                        <div class="mb-3">
-                                            <label for="description" class="form-label">Description:</label>
-                                            <textarea id="description" name="description" class="form-control"
-                                                      th:field="*{description}"></textarea>
-                                            <span class="text-danger" th:if="${#fields.hasErrors('description')}"
-                                                  th:errors="*{description}"></span>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Ajouter un commentaire</button>
-                                    </form>
+                                            </div>
+                                        </li>
+                                    </ul>
                                 </div>
+                                <div th:if="${article.commentaires.size() == 0}">
+                                    <p class="text-center">Aucun commentaire pour cet article.</p>
+                                </div>
+                                <h3 class="title-bar text-center mb-4">Ajouter un commentaire :</h3>
+                                <form th:action="@{'/articles/' + ${article.id} + '/commentaires'}"
+                                      th:object="${commentaire}"
+                                      method="post" th:id="form-create-commentaire" data-article-id="${article.id}">
+                                    <input type="hidden" name="id_article" th:value="${article.id}"/>
+                                    <input type="hidden" name="user" th:value="${#authentication.principal}"/>
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label">Description:</label>
+                                        <textarea id="description" name="description" class="form-control"
+                                                  th:field="*{description}"></textarea>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('description')}"
+                                              th:errors="*{description}"></span>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Ajouter un commentaire</button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Fenêtre modale de confirmation de suppression -->
-<div id="confirmDeleteModal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirmation de suppression</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir supprimer cet article ?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                <a th:href="@{/admin/articles/{id}/delete(id=${article.id})}"
-                   class="btn btn-danger"
-                   th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-                    Supprimer
-                </a>
             </div>
         </div>
     </div>

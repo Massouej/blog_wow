@@ -114,15 +114,16 @@ public class ArticleController {
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping(path = "/articles/{id}")
+    @DeleteMapping(path = "/articles/{id}/delete")
     @PreAuthorize("hasRole('ADMIN')")
     @ApiResponse(responseCode = "200", description = "La ressource n'existe pas, requête ignorée.")
     @ApiResponse(responseCode = "204", description = "La ressource a été supprimée avec succès.")
-    public ResponseEntity deleteArticle(@PathVariable Long id) {
+    public ResponseEntity<?> deleteArticle(@PathVariable Long id) {
         if (mRepository.existsById(id)) {
             mRepository.deleteById(id);
             return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok().build();
     }
 }

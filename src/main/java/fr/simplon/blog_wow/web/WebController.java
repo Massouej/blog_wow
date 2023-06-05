@@ -12,9 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
@@ -28,7 +26,9 @@ import java.util.Optional;
 @Controller
 public class WebController {
 
-    /** Nombre d'articles par page de résultats. */
+    /**
+     * Nombre d'articles par page de résultats.
+     */
 
     public static final int DEFAULT_PAGE_COUNT = 5;
 
@@ -40,20 +40,21 @@ public class WebController {
      * @param pArticleRepository
      */
     @Autowired
-    public WebController(ArticleRepository pArticleRepository) { mArticleRepository = pArticleRepository;}
+    public WebController(ArticleRepository pArticleRepository) {
+        mArticleRepository = pArticleRepository;
+    }
 
     /**
      * Page d'accueil.
      *
-     * @param page Numéro de page d'articles.
+     * @param page  Numéro de page d'articles.
      * @param model Modèle Thymeleaf.
      * @return La page d'accueil HTML.
      */
 
     @GetMapping(path = {"/", "/index"})
     public String index(
-            @RequestParam(required = false, defaultValue = "0") Integer page, Model model)
-    {
+            @RequestParam(required = false, defaultValue = "0") Integer page, Model model) {
         fillModelWithPaginationAttributes(model, page);
         model.addAttribute("newArticle", new Article());
         model.addAttribute("commentaire", new Commentaire());
@@ -67,14 +68,13 @@ public class WebController {
     /**
      * Fournit le HTML correspondant à la liste de tous les articles (avec pagination).
      *
-     * @param page Numéro de la page demandée.
+     * @param page  Numéro de la page demandée.
      * @param model Modèle Thymeleaf.
      * @return Le HTML correspondant à la liste des articles demandés.
      */
     @GetMapping(path = "/fragments/articles")
     public String fragmentArticles(
-            @RequestParam(required = false, defaultValue = "0") Integer page, Model model)
-    {
+            @RequestParam(required = false, defaultValue = "0") Integer page, Model model) {
         fillModelWithPaginationAttributes(model, page);
         return "index :: all-articles";
     }
@@ -82,14 +82,13 @@ public class WebController {
     /**
      * Fournit le HTML correspondant à un seul article (fragment).
      *
-     * @param id Identifiant de l'article.
+     * @param id    Identifiant de l'article.
      * @param model Modèle Thymeleaf.
      * @return Le contenu du fragment Thymeleaf correspondant à l'article demandé.
      */
 
     @GetMapping(path = "/fragments/articles/{id}")
-    public String fragmentArticle(@PathVariable Long id, Model model, @RequestParam(required = false, defaultValue = "false") boolean isHomePage)
-    {
+    public String fragmentArticle(@PathVariable Long id, Model model, @RequestParam(required = false, defaultValue = "false") boolean isHomePage) {
         Optional<Article> article = mArticleRepository.findById(id);
         if (article.isPresent()) {
             model.addAttribute("singleArticle", article.get());
@@ -108,11 +107,10 @@ public class WebController {
      * Remplissage du modèle avec les attributs liés à la pagination.
      *
      * @param model Modèle à remplir.
-     * @param page Numéro de page courante.
+     * @param page  Numéro de page courante.
      */
 
-    private void fillModelWithPaginationAttributes(Model model, int page)
-    {
+    private void fillModelWithPaginationAttributes(Model model, int page) {
         long count = mArticleRepository.count();
         long pageCount = count % DEFAULT_PAGE_COUNT > 0L ? (count / DEFAULT_PAGE_COUNT + 1) : (count / DEFAULT_PAGE_COUNT);
         List<Article> all = getArticles(page);
@@ -137,6 +135,7 @@ public class WebController {
 
     /**
      * Affiche le formulaire de création d'article.
+     *
      * @param model Le modèle Thymeleaf pour transmettre les données à la vue.
      * @return Le nom de la vue Thymeleaf pour afficher le formulaire de création d'article.
      */
@@ -176,4 +175,35 @@ public class WebController {
 
         return "articles";
     }
+
+
+    @GetMapping("/admin/articles/{id}/edit")
+    public String showEditArticleForm(@PathVariable Long id, Model model) {
+        Optional<Article> article = mArticleRepository.findById(id);
+        if (article.isPresent()) {
+            model.addAttribute("newArticle", new Article());
+            model.addAttribute("article", article.get());
+            return "admin/edit_delete-article";
+        } else {
+            throw new RecordNotFoundException(id);
+        }
+    }
+
+    @PostMapping("/admin/articles/{id}/edit")
+    public String updateArticle(@PathVariable Long id, @ModelAttribute("article") Article updatedArticle) {
+        Optional<Article> article = mArticleRepository.findById(id);
+        if (article.isPresent()) {
+            Article existingArticle = article.get();
+            existingArticle.setTitle(updatedArticle.getTitle());
+            existingArticle.setDescription(updatedArticle.getDescription());
+            existingArticle.setCreatedBy(updatedArticle.getCreatedBy());
+            mArticleRepository.save(existingArticle);
+            return "redirect:/fragments/articles/" + id; // Redirige vers la page de l'article modifié
+        } else {
+            throw new RecordNotFoundException(id);
+        }
+    }
+
+
+
 }

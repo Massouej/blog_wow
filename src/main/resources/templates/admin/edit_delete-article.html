@@ -11,11 +11,10 @@
 <body>
 <div class="container">
     <div class="row justify-content-center">
-        <div id="form-edit-article" th:fragment="edit-article (article)" class="col-md-6 mt-4">
+        <div id="form-edit-article" th:fragment="/admin/articles/" class="col-md-6 mt-4">
             <h4>Modifier un article</h4>
 
-            <form id="form-editing-article" action="/admin/update_article/{id}" method="post" th:object="${article}"
-                  enctype="multipart/form-data">
+            <form id="form-editing-article" data-url="/admin/articles/${article.id}/edit" method="post" th:object="${article}" enctype="multipart/form-data">
                 <div class="form-group">
                     <label class="form-label" for="title">Titre :</label>
                     <input class="form-control" id="title" type="text" th:field="*{title}" required>
@@ -32,36 +31,13 @@
                 <div class="form-group">
                     <button id="btn-reset-editing" class="btn btn-secondary" type="reset">Annuler</button>
                     <button id="btn-update-article" class="btn btn-primary" type="submit">Enregistrer</button>
-                    <button id="btn-delete-article" class="btn btn-danger" type="button" data-toggle="modal"
-                            data-target="#confirmDeleteModal">Supprimer
-                    </button>
+                    <button id="btn-delete-article" class="btn btn-danger" type="button" data-article-id="${article.id}">Supprimer</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<!-- Modal de confirmation de suppression -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmation de suppression</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Êtes-vous sûr de vouloir supprimer cet article ?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                <a id="btn-confirm-delete" class="btn btn-danger" href="#" role="button">Supprimer</a>
-            </div>
-        </div>
-    </div>
-</div>
 <script src="../static/articles.js" th:src="@{/articles.js}" type="module"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

@@ -105,7 +105,7 @@ function createNewPolling(event) {
     let form = document.getElementById(FORM_CREATE_ARTICLE);
     let formData = new FormData(form);
 
-    console.debug("Sending data to server : \n" + json);
+    console.debug("Sending data to server : \n" + formData);
 
     // Envoi des données au WebService
     fetch(BASEURL_WEBSERVICE_ARTICLES, {
@@ -117,6 +117,7 @@ function createNewPolling(event) {
                 // La requête s'est bien passée
                 console.log("Article créé avec succès !");
                 response.json().then((article) => updateListWith(article));
+                window.location.href ="/"; // redirige vers la page d'accueil à jours.
             } else {
                 // La requête a échoué.
                 console.error("Erreur lors de la création de l'article !");

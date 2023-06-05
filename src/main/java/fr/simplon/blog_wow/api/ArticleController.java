@@ -8,13 +8,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
+import org.springframework.web.servlet.view.RedirectView;
 
 
 import java.net.URI;
@@ -51,31 +53,33 @@ public class ArticleController {
 
     @PostMapping(path = "/articles")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
     @ApiResponse(responseCode = "201", description = "La ressource a été trouvée avec succès.")
     @ApiResponse(responseCode = "400", description = "En cas d'erreur de validation.")
-    public ResponseEntity<?> createArticle(
+    public RedirectView createArticle(
             @Valid @ModelAttribute("article") Article article, BindingResult validation,
-            HttpServletRequest request) {
-        if (validation.hasErrors()) // Vérifie les erreurs de validation.
-        {
-            List<String> errors = validation.getAllErrors().stream()//
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)//
+            HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        if (validation.hasErrors()) {
+            List<String> errors = validation.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toList());
 
-            return ResponseEntity.badRequest().body(errors);
+            // Ajoutez les erreurs de validation à l'objet RedirectAttributes
+            redirectAttributes.addFlashAttribute("errors", errors);
+
+            // Redirection vers la page de création d'article
+            return new RedirectView("/creation_new_article");
         }
 
-        // Force un identifiant à null dans le cas où le client envoie l'id d'un article qui existe déjà
-        // pour tenter de le modifier
+        // Sauvegarde de l'article
         article.setId(null);
         article = mRepository.save(article);
 
-        // Construction de la réponse
-        URI location = ServletUriComponentsBuilder.fromRequest(request)//
-                .path("/{id}")//
-                .buildAndExpand(article.getId())//
-                .toUri();
-        return ResponseEntity.created(location).body(article);
+        // Ajoutez un message de succès à l'objet RedirectAttributes
+        redirectAttributes.addFlashAttribute("successMessage", "Article créé avec succès !");
+
+        // Redirection vers la page d'accueil
+        return new RedirectView("/");
     }
 
     @PutMapping(path = "/articles/{id}")

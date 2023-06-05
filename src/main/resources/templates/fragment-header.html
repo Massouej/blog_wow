@@ -49,10 +49,8 @@
                 </div>
                 <div class="text-left">
                     <span th:if="${#authentication.principal != null}">
-                    <span class="user-label">Bienvenue, :</span>
+                    <span class="user-label">Bienvenue</span>
                     <span class="user-name" sec:authentication="name"></span>
-                    <span sec:authorize="isAuthenticated()" class="user-authorities"
-                          sec:authentication="principal.authorities">[ROLE_USER]</span>
                     </span>
 
                 </div>

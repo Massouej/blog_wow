@@ -21,12 +21,26 @@
                                     <h2 class="article-titre" th:text="${article.title}"></h2>
                                     <div class="article-dates">
                                         Créé par <span th:text="${article.createdBy}">John</span>
-                                        le <span th:text="${#temporals.format(article.createdAt, 'dd/MM/yyyy à HH:mm:ss')}">04/01/2023</span>
+                                        le <span
+                                            th:text="${#temporals.format(article.createdAt, 'dd/MM/yyyy à HH:mm:ss')}">04/01/2023</span>
                                     </div>
                                     <div class="article-description">
                                         <p th:text="${article.description}"></p>
                                         <a th:href="@{/fragments/articles/{id}(id=${article.id})}" id="read-more-link"
                                            class="btn btn-primary">Lire la suite</a>
+                                        <!-- Bouton de modification (affiché pour l'administrateur) -->
+                                        <a th:href="@{/admin/articles/{id}/edit(id=${article.id})}"
+                                           class="btn btn-secondary"
+                                           th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                                            Modifier
+                                        </a>
+
+                                        <!-- Bouton de suppression (affiché pour l'administrateur) -->
+                                        <a th:href="@{/admin/articles/{id}/delete(id=${article.id})}"
+                                           class="btn btn-danger"
+                                           th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                                            Supprimer
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="commentaires-section">
@@ -75,11 +89,32 @@
         </div>
     </div>
 </div>
+<!-- Fenêtre modale de confirmation de suppression -->
+<div id="confirmDeleteModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmation de suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer cet article ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <a th:href="@{/admin/articles/{id}/delete(id=${article.id})}"
+                   class="btn btn-danger"
+                   th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                    Supprimer
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="../static/articles.js" th:src="@{/articles.js}" type="module"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-
 </body>
 </html>

@@ -11,6 +11,9 @@
     <th:block th:replace="~{fragment-pagination :: pagination(page=${page},pageCount=${pageCount})}"></th:block>
     <button id="btn-refresh-pollings" class="btn-outline-primary btn-sm">Rafraîchir</button>&nbsp;
 </div>
+<div th:if="${successMessage}" class="alert alert-success">
+    <p th:text="${successMessage}"></p>
+</div>
 
 
 <div id="articles" th:fragment="all-articles" class="articles-container row justify-content-center">

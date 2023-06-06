@@ -30,7 +30,8 @@
                         </a>
 
                         <!-- Bouton de suppression (affiché pour l'administrateur) -->
-                        <button class="btn btn-danger" data-article-id="${article.id}">Supprimer</button>
+                        <button th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" class="btn btn-danger" th:data-article-id="${article.id}">Supprimer
+                        </button>
                     </div>
                 </div>
 
@@ -55,6 +56,8 @@
                                     </div>
                                     <p th:text="${commentaire.description}"></p>
                                 </div>
+                                <a th:href="@{/commentaires/{commentaireId}/edit(commentaireId=${commentaire.id})}" class="btn btn-secondary">Modifier</a>
+                                <button class="btn btn-danger" th:data-comment-id="${commentaire.id}">Supprimer</button>
                             </div>
                         </li>
                     </ul>

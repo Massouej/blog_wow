@@ -11,6 +11,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * Contrôleur CRUD pour les articles.
  */
-@RestController
+@Controller
 @RequestMapping("/api")
 public class ArticleController {
     private ArticleRepository mRepository;
@@ -82,48 +83,5 @@ public class ArticleController {
         return new RedirectView("/");
     }
 
-    @PutMapping(path = "/articles/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    @ApiResponse(responseCode = "200", description = "La ressource a été mise à jour avec succès.")
-    @ApiResponse(responseCode = "404", description = "La ressource à mettre à jour n'a pas été trouvée.")
-    public ResponseEntity<?> updateArticle(
-            @PathVariable Long id,
-            @RequestBody @Valid Article article,
-            BindingResult validation,
-            HttpServletRequest request) {
-        if (validation.hasErrors()) {
-            List<String> errors = validation.getAllErrors().stream()//
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)//
-                    .collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errors);
-        }
 
-        Article updated = mRepository.findById(id).map(a -> {
-            a.setTitle(article.getTitle());
-            a.setDescription(article.getDescription());
-            a.setCreatedAt(article.getCreatedAt());
-            a.setCreatedBy(article.getCreatedBy());
-            return mRepository.save(a);
-        }).orElseGet(() -> null);
-
-        if (updated == null) {
-            return ResponseEntity.notFound()//
-                    .location(ServletUriComponentsBuilder.fromRequest(request).build().toUri())//
-                    .build();
-        }
-        return ResponseEntity.ok(updated);
-    }
-
-    @DeleteMapping(path = "/articles/{id}/delete")
-    @PreAuthorize("hasRole('ADMIN')")
-    @ApiResponse(responseCode = "200", description = "La ressource n'existe pas, requête ignorée.")
-    @ApiResponse(responseCode = "204", description = "La ressource a été supprimée avec succès.")
-    public ResponseEntity<?> deleteArticle(@PathVariable Long id) {
-        if (mRepository.existsById(id)) {
-            mRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }

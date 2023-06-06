@@ -17,7 +17,7 @@ const BTN_CHANGE_PASSWORD = "btn-change-password";
 const BTN_REFRESH = "bnt-refresh-pollings";
 const DIV_ARTICLES = "articles";
 const FORM_CREATE_ARTICLE = "form-creation-article";
-const FORM_CREATE_COMMENTAIRE = "form-create-commentaire"; // Ajout de l'ID du formulaire de création de commentaire
+const FORM_CREATE_COMMENTAIRE = "form-create-commentaire";
 
 document.onreadystatechange = () => {
     if (document.readyState === "complete") {
@@ -37,7 +37,7 @@ document.onreadystatechange = () => {
         if (btnChangePassword) {
             btnChangePassword.addEventListener("click", changePassword);
         }
-        let formCreateCommentaire = document.getElementById(FORM_CREATE_COMMENTAIRE); // Ajout de l'écouteur pour le formulaire de création de commentaire
+        let formCreateCommentaire = document.getElementById(FORM_CREATE_COMMENTAIRE);
         if (formCreateCommentaire) {
             formCreateCommentaire.addEventListener("submit", createNewComment);
         }
@@ -49,6 +49,27 @@ document.onreadystatechange = () => {
                 confirmDeleteArticle(articleId);
             });
         });
+
+        let deleteButtonsComent = document.querySelectorAll(".btn-delete-commentaire");
+        deleteButtonsComent.forEach(function (button) {
+            button.addEventListener("click", function () {
+                let commentaireId = this.getAttribute("data-commentaire-id");
+                confirmDeleteCommentaire(commentaireId);
+            });
+        });
+    }
+
+    function redirectToEditArticle(articleId) {
+        // Effectuer la redirection vers la page d'édition de l'article
+        window.location.href = "/admin/articles/" + articleId + "/edit";
+    }
+
+    function redirectToEditCommentaire(commentaireId) {
+        // Extraire l'identifiant de l'article à partir de l'URL actuelle
+        var articleId = window.location.pathname.split("/")[2];
+
+        // Effectuer la redirection vers la page d'édition du commentaire en utilisant l'identifiant de l'article
+        window.location.href = "/commentaires/" + commentaireId + "/edit?articleId=" + articleId;
     }
 
     /**
@@ -58,54 +79,91 @@ document.onreadystatechange = () => {
     function editArticle(event) {
         event.preventDefault();
         let articleId = event.target.getAttribute("data-article-id");
-        redirectToEditArticle(event); // Appeler la fonction redirectToEditArticle
+        redirectToEditArticle(event);
         window.location.href = "/admin/articles/" + articleId + "/edit";
-        updateArticle(event); // Appeler la fonction updateArticle après la redirection
     }
 
     /**
-     * Met à jour l'article en envoyant les données au serveur.
+     * Redirige vers la page d'édition du commentaire.
      * @param {MouseEvent} event - L'événement de clic.
      */
-    function updateArticle(event) {
+    function editCommentaire(event) {
         event.preventDefault();
+        let commentaireId = event.target.getAttribute("data-commentaire-id");
+        redirectToEditCommentaire(event);
+        window.location.href = "/commentaires/" + commentaireId + "/edit";
+
+        let form = document.getElementById(FORM_CREATE_COMMENTAIRE);
+        form.addEventListener("submit", updateCommentaire);
+    }
+
+
+    /**
+     * Met à jour le commentaire.
+     * @param {Event} event - L'événement de soumission du formulaire.
+     */
+    function updateCommentaire(event) {
+        event.preventDefault();
+
         let form = event.target;
-        let articleId = form.getAttribute("data-article-id");
+        let commentaireId = form.getAttribute("data-commentaire-id");
         let formData = new FormData(form);
 
-        fetch("/admin/articles/" + articleId + "/edit", {
-            method: "POST",
-            body: formData,
-        })
-            .then((response) => {
-                if (response.ok) {
-                    console.log("Article mis à jour avec succès !");
-                    window.location.href = "/fragments/articles/" + articleId;
-                } else {
-                    console.error("Erreur lors de la mise à jour de l'article !");
-                    response.json().then((err) => console.error(err));
-                }
+        // Vérifier si l'utilisateur est le créateur du commentaire
+        const userId = getCurrentUserId(); // Remplacez getCurrentUserId() par la fonction appropriée pour récupérer l'ID de l'utilisateur connecté
+        const commentaireUserId = getUserIdFromCommentaire(commentaireId); // Remplacez cette ligne par la façon dont vous récupérez l'identifiant de l'utilisateur associé au commentaire
+
+        if (userId === commentaireUserId) {
+            fetch("/commentaires/" + commentaireId + "/edit", {
+                method: "POST",
+                body: formData,
             })
-            .catch((error) => {
-                console.error("Erreur lors de la requête :", error);
-            });
+                .then((response) => {
+                    if (response.ok) {
+                        console.log("Commentaire mis à jour avec succès !");
+                        // Redirection vers la page des commentaires de l'article
+                        window.location.href = "/fragments/articles/" + commentaireId;
+                    } else {
+                        console.error("Erreur lors de la mise à jour du commentaire !");
+                        response.json().then((err) => console.error(err));
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erreur lors de la requête :", error);
+                });
+        } else {
+            console.error("Vous n'êtes pas autorisé à modifier ce commentaire !");
+        }
     }
+
+    /**
+     * Obtient l'ID de l'utilisateur associé au commentaire.
+     * @param {number} commentaireId - L'identifiant du commentaire.
+     * @returns {number|null} - L'ID de l'utilisateur ou null si non trouvé.
+     */
+    function getUserIdFromCommentaire(commentaireId) {
+        // Obtenez l'ID de l'utilisateur associé au commentaire en interrogeant votre backend
+        // Remplacez cette implémentation par la façon dont vous récupérez l'identifiant de l'utilisateur associé au commentaire
+        // Vous pouvez utiliser une requête AJAX ou toute autre méthode pour obtenir les données de votre backend
+        // et extraire l'ID de l'utilisateur du commentaire correspondant.
+        // Retournez l'ID de l'utilisateur ou null si non trouvé.
+        return null;
+    }
+
 
     /**
      * Confirme la suppression de l'article.
-     * @param {MouseEvent} event - L'événement de clic.
+     * @param {number} articleId - L'identifiant de l'article.
      */
     function confirmDeleteArticle(articleId) {
         if (confirm("Êtes-vous sûr de vouloir supprimer cet article ?")) {
-            var deleteUrl = "/admin/articles/" + articleId + "/delete";
-
-            fetch(deleteUrl, {
+            fetch("/admin/articles/" + articleId + "/delete", {
                 method: "DELETE",
             })
                 .then(function (response) {
                     if (response.ok) {
                         console.log("Article supprimé avec succès !");
-                        // Faire d'autres actions après la suppression réussie
+                        window.location.href = "/";
                     } else {
                         console.error("Erreur lors de la suppression de l'article !");
                     }
@@ -116,20 +174,40 @@ document.onreadystatechange = () => {
         }
     }
 
+    /**
+     * Confirme la suppression du commentaire.
+     * @param {number} commentaireId - L'identifiant du commentaire.
+     */
+    function confirmDeleteCommentaire(commentaireId) {
+        if (confirm("Êtes-vous sûr de vouloir supprimer ce commentaire ?")) {
+            fetch("/commentaires/" + commentaireId + "/delete", {
+                method: "DELETE",
+            })
+                .then(function (response) {
+                    if (response.ok) {
+                        console.log("Commentaire supprimé avec succès !");
+                        window.location.href = "/";
+                    } else {
+                        console.error("Erreur lors de la suppression du commentaire !");
+                    }
+                })
+                .catch(function (error) {
+                    console.error("Erreur lors de la requête :", error);
+                });
+        }
+    }
 
     /**
      * Redirige vers la page d'inscription.
-     * @param {MouseEvent} event - L'événement de clic.
      */
-    function subscribe(event) {
+    function subscribe() {
         window.location.href = "/inscription";
     }
 
     /**
      * Recharge la liste des articles.
-     * @param {MouseEvent} event - L'événement de clic.
      */
-    function refreshAllArticles(event) {
+    function refreshAllArticles() {
         let pageCourante = document.querySelector(".page-courante").textContent;
         pageCourante -= 1;
 
@@ -137,9 +215,7 @@ document.onreadystatechange = () => {
             .then((result) => result.text())
             .then((text) => {
                 let div = document.getElementById(DIV_ARTICLES);
-                let documentFragment = document
-                    .createRange()
-                    .createContextualFragment(text);
+                let documentFragment = document.createRange().createContextualFragment(text);
                 div.innerHTML = documentFragment.firstChild.innerHTML;
             });
     }
@@ -156,24 +232,20 @@ document.onreadystatechange = () => {
             .then((response) => response.text())
             .then((text) => {
                 const div = document.getElementById(DIV_ARTICLES);
-                let documentFragment = document
-                    .createRange()
-                    .createContextualFragment(text);
+                let documentFragment = document.createRange().createContextualFragment(text);
                 div.prepend(documentFragment.firstChild);
             });
     }
 
     /**
      * Envoie les données de l'article vers l'URL "/api/articles" avec la méthode POST.
-     * @param {Event} event - L'événement de clic.
+     * @param {Event} event - L'événement de soumission du formulaire.
      */
     function createNewPolling(event) {
         event.preventDefault();
 
         let form = document.getElementById(FORM_CREATE_ARTICLE);
         let formData = new FormData(form);
-
-        console.debug("Envoi des données au serveur : \n" + formData);
 
         fetch(BASEURL_WEBSERVICE_ARTICLES, {
             method: "POST",
@@ -196,7 +268,7 @@ document.onreadystatechange = () => {
 
     /**
      * Envoie les données du commentaire vers l'URL "/api/commentaires" avec la méthode POST.
-     * @param {Event} event - L'événement de clic.
+     * @param {Event} event - L'événement de soumission du formulaire.
      */
     function createNewComment(event) {
         event.preventDefault();

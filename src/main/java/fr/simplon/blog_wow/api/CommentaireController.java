@@ -4,15 +4,19 @@ import fr.simplon.blog_wow.dao.ArticleRepository;
 import fr.simplon.blog_wow.dao.CommentaireRepository;
 import fr.simplon.blog_wow.entity.Article;
 import fr.simplon.blog_wow.entity.Commentaire;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -33,26 +37,6 @@ public class CommentaireController {
         mRepository = pRepository;
         mCommentaireRepository = pCommentaireRepository;
     }
-
-    /**
-     * Affiche la page des commentaires d'un article.
-     *
-     * @param articleId L'identifiant de l'article.
-     * @param model     Le modèle Thymeleaf.
-     * @return La page de listing des commentaires d'un article.
-     */
-    @GetMapping(path = "/commentaires/{articleId}")
-    public String commentairesByArticle(@PathVariable Long articleId, Model model) {
-        Optional<Article> article = mRepository.findById(articleId);
-        if (article.isPresent()) {
-            model.addAttribute("article", article.get());
-            model.addAttribute("commentaires", article.get().getCommentaires());
-        } else {
-            throw new RecordNotFoundException(articleId);
-        }
-        return "commentaires";
-    }
-
 
     /**
      * Traite la soumission du formulaire de création d'un commentaire.
@@ -90,6 +74,26 @@ public class CommentaireController {
         }
     }
 
+
+    /**
+     * Affiche la page des commentaires d'un article.
+     *
+     * @param articleId L'identifiant de l'article.
+     * @param model     Le modèle Thymeleaf.
+     * @return La page de listing des commentaires d'un article.
+     */
+    @GetMapping(path = "/commentaires/{articleId}")
+    public String commentairesByArticle(@PathVariable Long articleId, Model model) {
+        Optional<Article> article = mRepository.findById(articleId);
+        if (article.isPresent()) {
+            model.addAttribute("article", article.get());
+            model.addAttribute("commentaires", article.get().getCommentaires());
+        } else {
+            throw new RecordNotFoundException(articleId);
+        }
+        return "commentaires";
+    }
+
     /**
      * Affiche le formulaire de modification d'un commentaire.
      *
@@ -101,11 +105,13 @@ public class CommentaireController {
     public String showEditCommentaireForm(@PathVariable Long commentaireId, Model model) {
         Optional<Commentaire> commentaire = mCommentaireRepository.findById(commentaireId);
         if (commentaire.isPresent()) {
+            model.addAttribute("newCommentaire", new Commentaire());
             model.addAttribute("commentaire", commentaire.get());
+            return "edit_commentaire";
         } else {
             throw new RecordNotFoundException(commentaireId);
         }
-        return "edit-commentaire";
+
     }
 
     /**
@@ -113,30 +119,48 @@ public class CommentaireController {
      *
      * @param commentaireId      L'identifiant du commentaire à modifier.
      * @param updatedCommentaire Le commentaire modifié.
-     * @param bindingResult      Le résultat de la validation du formulaire.
      * @return Redirige vers la page des commentaires de l'article.
      */
     @PostMapping("/commentaires/{commentaireId}/edit")
-    public String editCommentaire(
-            @PathVariable Long commentaireId,
-            @Valid @ModelAttribute("commentaire") Commentaire updatedCommentaire,
-            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "edit-commentaire";
-        }
-
+    public String updateCommentaire(@PathVariable Long commentaireId,
+                                    @ModelAttribute("commentaire") Commentaire updatedCommentaire) {
         Optional<Commentaire> commentaire = mCommentaireRepository.findById(commentaireId);
         if (commentaire.isPresent()) {
-            commentaire.get().setDescription(updatedCommentaire.getDescription());
-            // Mettez à jour les autres propriétés du commentaire
+            Commentaire existingCommentaire = commentaire.get();
 
-            // Enregistrez les modifications en utilisant mCommentaireRepository
+            // Récupérer l'utilisateur connecté
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentUsername = authentication.getName();
 
-            return "redirect:/commentaires/" + commentaire.get().getArticle().getId();
+            // Vérifier si l'utilisateur connecté est l'auteur du commentaire
+            if (existingCommentaire.getUser().equals(currentUsername)) {
+                existingCommentaire.setDescription(updatedCommentaire.getDescription());
+                mCommentaireRepository.save(existingCommentaire);
+                return "redirect:/fragments/articles/" + existingCommentaire.getArticle().getId();
+            } else {
+                throw new AccessDeniedException("Vous n'êtes pas autorisé à modifier ce commentaire.");
+            }
         } else {
             throw new RecordNotFoundException(commentaireId);
         }
     }
+
+
+
+    @DeleteMapping("/commentaires/{commentaireId}/delete")
+    @ApiResponse(responseCode = "200", description = "La ressource n'existe pas, requête ignorée.")
+    @ApiResponse(responseCode = "204", description = "La ressource a été supprimée avec succès.")
+    public ResponseEntity deleteCommentaire(@PathVariable Long commentaireId) {
+        if (mCommentaireRepository.existsById(commentaireId)) {
+            mCommentaireRepository.deleteById(commentaireId);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok().build();
+        }
+    }
+
+
+
 
     /**
      * Signale un commentaire.

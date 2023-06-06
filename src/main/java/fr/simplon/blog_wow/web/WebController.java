@@ -4,12 +4,15 @@ import fr.simplon.blog_wow.api.RecordNotFoundException;
 import fr.simplon.blog_wow.dao.ArticleRepository;
 import fr.simplon.blog_wow.entity.Article;
 import fr.simplon.blog_wow.entity.Commentaire;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.ServletOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -145,26 +148,6 @@ public class WebController {
         return "admin/create_new_article";
     }
 
-    /**
-     * Affiche le formulaire de création d'un commentaire.
-     *
-     * @param articleId L'identifiant de l'article auquel le commentaire sera associé.
-     * @param model     Le modèle Thymeleaf.
-     * @return La page de création d'un commentaire.
-     */
-    @GetMapping("/articles/{articleId}/commentaires/create")
-    public String showCreateCommentaireForm(@PathVariable Long articleId, Model model) {
-        Optional<Article> article = mArticleRepository.findById(articleId);
-        if (article.isPresent()) {
-            Commentaire commentaire = new Commentaire();
-            commentaire.setArticle(article.get());
-            model.addAttribute("commentaire", commentaire);
-            model.addAttribute("articleId", articleId);
-        } else {
-            throw new RecordNotFoundException(articleId);
-        }
-        return "create-commentaire";
-    }
 
 
     @GetMapping("/view/articles")
@@ -203,7 +186,16 @@ public class WebController {
             throw new RecordNotFoundException(id);
         }
     }
-
-
-
+    @DeleteMapping(path = "/admin/articles/{id}/delete")
+    public ResponseEntity deleteArticle(@PathVariable Long id) {
+        if (mArticleRepository.existsById(id)) {
+            mArticleRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok().build();
+        }
+    }
 }
+
+
+

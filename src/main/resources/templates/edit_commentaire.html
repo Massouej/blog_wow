@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Modification d'un commentaire</title>
+    <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
 </head>
+<header th:replace="~{fragment-header :: header}"></header>
 <body>
-<h1>Modification d'un commentaire</h1>
-<form action="/commentaires/{commentaireId}/edit" method="post" th:object="${commentaire}">
-    <input type="hidden" name="commentaireId" th:value="${commentaire.id}"/>
-    <div>
-        <label>Description:</label>
-        <textarea name="description" th:field="*{description}"></textarea>
-        <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
-    </div>
-
-    <button type="submit">Modifier</button>
-</form>
+<div class="container">
+    <h1 class="mt-4">Modification d'un commentaire</h1>
+    <form id="form-editing-commentaire" data-url="/commentaires/${commentaire.id}/edit" method="post"
+          th:object="${commentaire}" enctype="multipart/form-data">
+        <input type="hidden" name="commentaireId" th:value="${commentaire.id}"/>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description:</label>
+            <textarea id="description" name="description" class="form-control" th:field="*{description}"></textarea>
+            <span class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+        </div>
+        <div class="mb-3">
+            <label for="user" class="form-label">Créateur:</label>
+            <input type="text" id="user" name="user" class="form-control" th:value="${commentaire.user}"
+                   readonly="readonly"/>
+            <input type="hidden" name="current_user" th:value="${commentaire.user}"/>
+        </div>
+        <button class="btn btn-primary" type="submit">Modifier</button>
+    </form>
+</div>
 <script src="../static/articles.js" th:src="@{/articles.js}" type="module"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"

@@ -43,11 +43,15 @@
                                     </div>
                                 </div>
                                 <div class="commentaires-section">
+                                    <!-- Vérifier s'il y a des commentaires associés à l'article -->
+
                                     <div th:if="${article.commentaires.size() > 0}">
                                         <h3 class="title-bar text-center mb-4">Commentaires :</h3>
                                         <ul class="list-group">
+                                            <!-- Parcourir la liste des commentaires de l'article -->
+
                                             <li th:each="commentaire : ${article.commentaires}" class="list-group-item">
-                                                <div class="d-flex justify-content-between align-items-center">
+                                                <div class="d-flex justify-content-between align-items-start">
                                                     <div class="commentaire">
                                                         <div class="commentaire-info">
                                                             <span class="badge bg-secondary">Par <span
@@ -57,10 +61,13 @@
                                                         </div>
                                                         <p th:text="${commentaire.description}"></p>
                                                     </div>
-                                                    <a th:href="@{/commentaires/{commentaireId}/edit(commentaireId=${commentaire.id})}" class="btn btn-secondary">Modifier</a>
-                                                    <button class="btn btn-danger bnt-delete-commentaire"
-                                                            th:data-comment-id="${commentaire.id}">Supprimers
-                                                    </button>
+                                                    <div class="commentaire-buttons">
+                                                        <a th:href="@{/commentaires/{commentaireId}/edit(commentaireId=${commentaire.id})}"
+                                                           class="btn btn-secondary btn-sm">Modifier</a>
+                                                        <button class="btn btn-danger btn-sm"
+                                                                th:data-commentaire-id="${commentaire.id}">Supprimer
+                                                        </button>
+                                                    </div>
 
                                                 </div>
                                             </li>

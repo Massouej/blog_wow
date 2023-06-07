@@ -151,16 +151,25 @@ public class CommentaireController {
     @ApiResponse(responseCode = "200", description = "La ressource n'existe pas, requête ignorée.")
     @ApiResponse(responseCode = "204", description = "La ressource a été supprimée avec succès.")
     public ResponseEntity deleteCommentaire(@PathVariable Long commentaireId) {
-        if (mCommentaireRepository.existsById(commentaireId)) {
-            mCommentaireRepository.deleteById(commentaireId);
-            return ResponseEntity.noContent().build();
+        Optional<Commentaire> commentaire = mCommentaireRepository.findById(commentaireId);
+        if (commentaire.isPresent()) {
+            Commentaire existingCommentaire = commentaire.get();
+
+            // Récupérer l'utilisateur connecté
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentUsername = authentication.getName();
+
+            // Vérifier si l'utilisateur connecté est l'auteur du commentaire
+            if (existingCommentaire.getUser().equals(currentUsername)) {
+                mCommentaireRepository.deleteById(commentaireId);
+                return ResponseEntity.noContent().build();
+            } else {
+                throw new AccessDeniedException("Vous n'êtes pas autorisé à supprimer ce commentaire.");
+            }
         } else {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.notFound().build();
         }
     }
-
-
-
 
     /**
      * Signale un commentaire.

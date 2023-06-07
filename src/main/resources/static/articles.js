@@ -42,7 +42,7 @@ document.onreadystatechange = () => {
             formCreateCommentaire.addEventListener("submit", createNewComment);
         }
 
-        let deleteButtons = document.querySelectorAll(".btn-danger");
+        let deleteButtons = document.querySelectorAll(".btn-delete-article");
         deleteButtons.forEach(function (button) {
             button.addEventListener("click", function () {
                 let articleId = this.getAttribute("data-article-id");
@@ -179,23 +179,33 @@ document.onreadystatechange = () => {
      * @param {number} commentaireId - L'identifiant du commentaire.
      */
     function confirmDeleteCommentaire(commentaireId) {
-        if (confirm("Êtes-vous sûr de vouloir supprimer ce commentaire ?")) {
-            fetch("/commentaires/" + commentaireId + "/delete", {
-                method: "DELETE",
+        fetch(`/commentaires/${commentaireId}/delete`, {
+            method: "DELETE",
+        })
+            .then(function (response) {
+                if (response.ok) {
+                    console.log("Commentaire supprimé avec succès !");
+                    // Recharger la page pour mettre à jour les commentaires
+                    window.location.reload();
+                } else if (response.status === 403) {
+                    showError(commentaireId, "Vous n'êtes pas autorisé à supprimer ce commentaire.");
+                } else {
+                    console.error("Erreur lors de la suppression du commentaire !");
+                }
             })
-                .then(function (response) {
-                    if (response.ok) {
-                        console.log("Commentaire supprimé avec succès !");
-                        window.location.href = "/";
-                    } else {
-                        console.error("Erreur lors de la suppression du commentaire !");
-                    }
-                })
-                .catch(function (error) {
-                    console.error("Erreur lors de la requête :", error);
-                });
+            .catch(function (error) {
+                console.error("Erreur lors de la requête :", error);
+            });
+    }
+
+    function showError(commentaireId, message) {
+        let errorMessage = document.getElementById(`error-message-${commentaireId}`);
+        if (errorMessage) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = "block";
         }
     }
+
 
     /**
      * Redirige vers la page d'inscription.

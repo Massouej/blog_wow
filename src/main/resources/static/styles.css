@@ -1,3 +1,13 @@
+/* CSS nav bar logo */
+
+.bg-light {
+    background-color: white;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: black;
+}
+
 .navbar-logo {
     width: 150px;
     height: 70px;
@@ -10,6 +20,7 @@
     margin-top: 60px;
 }
 
+/* CSS bloc article */
 
 .article-titre {
     font-size: 24px;
@@ -35,6 +46,7 @@
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-top: 10px;
+    background-color: white;
 }
 
 .commentaires-section {
@@ -42,7 +54,7 @@
 }
 
 #header {
-    background-color: #f8f9fa;
+
     padding: 20px;
     text-align: center;
     margin-bottom: 20px;
@@ -73,30 +85,27 @@
     background-color: #007bff;
     color: #fff;
 }
+/* CSS image droit gauche */
 
-.image-container {
-    position: relative;
-    z-index: 0;
+.motif {
+    position: fixed;
+    width: 280px;
+    height: 280px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    z-index: -1;
 }
 
-.image-left {
-    left: 0;
-    position: fixed;
-    top: 50%;
-    width: 50px;
-    height: 100px;
-    background-size: cover;
+.motif-left-visible {
+    left: -147px;
+    top: 28%;
     background-image: url("logo_horde.png");
 }
 
-.image-right {
-    right: 0;
-    position: fixed;
-    top: 50%;
-    width: 50px;
-    height: 100px;
-    background-size: cover;
+.motif-right-visible {
+    right: -135px;
+    top: 28%;
     background-image: url("logo_alliance_cute.png");
 }
-
 

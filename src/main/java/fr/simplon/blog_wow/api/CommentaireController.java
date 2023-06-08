@@ -42,7 +42,7 @@ public class CommentaireController {
      * Traite la soumission du formulaire de création d'un commentaire.
      *
      * @param articleId     L'identifiant de l'article auquel le commentaire sera associé.
-     * @param commentaire   Le commentaire à créer.
+     * @param commentaire   Le commentaire est créé.
      * @param bindingResult Le résultat de la validation du formulaire.
      * @return Redirige vers la page des commentaires de l'article.
      */
@@ -53,11 +53,10 @@ public class CommentaireController {
             BindingResult bindingResult,
             Principal principal) {
         if (bindingResult.hasErrors()) {
-            return "create-commentaire";
+            return "redirect:/articles/" + articleId;
         }
 
         Optional<Article> article = mRepository.findById(articleId);
-        System.out.println(articleId);
         if (article.isPresent()) {
             commentaire.setArticle(article.get());
             commentaire.setCommentAt(LocalDateTime.now());

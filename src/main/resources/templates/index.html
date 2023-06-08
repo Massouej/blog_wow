@@ -2,14 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Blog World Of Warcraft</title>
-    <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
+    <th:block th:replace="~{fragments/fragment-meta :: html-header}"></th:block>
 </head>
-<header th:replace="~{fragment-header :: header}"></header>
-<div th:replace="~{fragment-motifs}"></div>
+<header th:replace="~{fragments/fragment-header :: header}"></header>
+<div th:replace="~{fragments/fragment-motifs}"></div>
 <body>
 
 <div id="header">
-    <th:block th:replace="~{fragment-pagination :: pagination(page=${page},pageCount=${pageCount})}"></th:block>
+    <th:block th:replace="~{fragments/fragment-pagination :: pagination(page=${page},pageCount=${pageCount})}"></th:block>
     <button id="btn-refresh-pollings" class="btn-outline-primary btn-sm">Rafraîchir</button>&nbsp;
 </div>
 <div th:if="${successMessage}" class="alert alert-success">
@@ -19,7 +19,7 @@
 
 <div id="articles" th:fragment="all-articles" class="articles-container row justify-content-center">
     <div th:each="article : ${articles}">
-        <div th:replace="~{fragment-article :: single-article(article=${article})}" class="col-md-6 mb-4"></div>
+        <div th:replace="~{fragments/fragment-article :: single-article(article=${article})}" class="col-md-6 mb-4"></div>
     </div>
 </div>
 

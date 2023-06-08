@@ -74,31 +74,11 @@ public class CommentaireController {
         }
     }
 
-
-    /**
-     * Affiche la page des commentaires d'un article.
-     *
-     * @param articleId L'identifiant de l'article.
-     * @param model     Le modèle Thymeleaf.
-     * @return La page de listing des commentaires d'un article.
-     */
-    @GetMapping(path = "/commentaires/{articleId}")
-    public String commentairesByArticle(@PathVariable Long articleId, Model model) {
-        Optional<Article> article = mRepository.findById(articleId);
-        if (article.isPresent()) {
-            model.addAttribute("article", article.get());
-            model.addAttribute("commentaires", article.get().getCommentaires());
-        } else {
-            throw new RecordNotFoundException(articleId);
-        }
-        return "commentaires";
-    }
-
     /**
      * Affiche le formulaire de modification d'un commentaire.
      *
      * @param commentaireId L'identifiant du commentaire à modifier.
-     * @param model         Le modèle Thymeleaf.
+     * @param model Le modèle Thymeleaf.
      * @return La page de modification d'un commentaire.
      */
     @GetMapping("/commentaires/{commentaireId}/edit")

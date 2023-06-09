@@ -9,7 +9,13 @@
 </header>
 <div th:replace="~{fragments/fragment-motifs}"></div>
 <body>
-<div th:replace="~{fragments/fragment-article :: single-article(article=${singleArticle})}"></div>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div th:replace="~{fragments/fragment-article :: single-article(article=${singleArticle})}"></div>
+    </div>
+  </div>
+</div>
 <script src="../static/motifs.js" th:src="@{/motifs.js}" type="module"></script>
 <script src="../static/articles.js" th:src="@{/articles.js}" type="module"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"

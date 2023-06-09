@@ -109,6 +109,18 @@
     background-image: url("logo_alliance_cute.png");
 }
 
+.motif-lt-left-visible {
+    left: -147px;
+    top: 20%;
+    background-image: url("logo_horde.png");
+}
+
+.motif-lt-right-visible {
+    right: -135px;
+    top: 20%;
+    background-image: url("logo_alliance_cute.png");
+}
+
 p {
     text-align: justify;
 }

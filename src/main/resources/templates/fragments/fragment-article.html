@@ -1,43 +1,32 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Article</title>
     <th:block th:replace="~{fragment-meta :: html-header}"></th:block>
 </head>
 
 <body>
-<div th:fragment="single-article (article)" class="box-article">
+<div th:fragment="single-article (article)" class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="box-article mb-4">
                 <div class="article-text-content">
-
                     <h2 class="article-titre" th:text="${article.title}"></h2>
                     <div class="article-dates">
                         Créé par <span th:text="${article.createdBy}">John</span>
-                        le <span
-                            th:text="${#temporals.format(article.createdAt, 'dd/MM/yyyy à HH:mm:ss')}">04/01/2023</span>
+                        le <span th:text="${#temporals.format(article.createdAt, 'dd/MM/yyyy à HH:mm:ss')}">04/01/2023</span>
                     </div>
-
                     <div class="article-description">
-                        <p th:text="${article.description}"></p>
-                        <a th:href="@{/fragments/articles/{id}(id=${article.id})}" id="read-more-link"
-                           class="btn btn-primary">Lire la suite</a>
+                        <p class="mb-3" th:text="${article.description}"></p>
+                        <a th:href="@{/fragments/articles/{id}(id=${article.id})}" id="read-more-link" class="btn btn-primary">Lire la suite</a>
                         <!-- Bouton de modification (affiché pour l'administrateur) -->
-                        <a th:href="@{/admin/articles/{id}/edit(id=${article.id})}"
-                           class="btn btn-secondary"
-                           th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+                        <a th:href="@{/admin/articles/{id}/edit(id=${article.id})}" class="btn btn-secondary" th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
                             Modifier
                         </a>
-
                         <!-- Bouton de suppression (affiché pour l'administrateur) -->
-                        <button th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" class="btn btn-danger btn-delete-article"
-                                th:data-article-id="${article.id}">Supprimer
-                        </button>
+                        <button th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" class="btn btn-danger btn-delete-article" th:data-article-id="${article.id}">Supprimer</button>
                     </div>
                 </div>
-
-
             </div>
 
             <!-- Section des commentaires -->
@@ -48,28 +37,15 @@
                     <ul class="list-group">
                         <!-- Parcourir la liste des commentaires de l'article -->
                         <li th:each="commentaire : ${article.commentaires}" class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="commentaire">
-                                    <div class="commentaire-info">
-                                            <span class="badge bg-secondary">Par <span
-                                                    th:text="${commentaire.user}"></span></span>
-                                        <span class="badge bg-secondary">le <span
-                                                th:text="${#temporals.format(commentaire.commentAt, 'dd/MM/yyyy à HH:mm:ss')}"></span></span>
-                                    </div>
-                                    <p th:text="${commentaire.description}"></p>
+                            <div class="commentaire">
+                                <div class="commentaire-info">
+                                    <span class="badge bg-secondary">Par <span th:text="${commentaire.user}"></span></span>
+                                    <span class="badge bg-secondary">le <span th:text="${#temporals.format(commentaire.commentAt, 'dd/MM/yyyy à HH:mm:ss')}"></span></span>
                                 </div>
-                                <div class="commentaire-buttons">
-                                    <a th:href="@{/commentaires/{commentaireId}/edit(commentaireId=${commentaire.id})}"
-                                       class="btn btn-secondary btn-sm">Modifier</a>
-                                    <button class="btn btn-danger btn-delete-commentaire btn-sm"
-                                            th:data-commentaire-id="${commentaire.id}" onclick="confirmDeleteCommentaire(${commentaire.id})">Supprimer
-                                    </button>
-                                    <div th:if="${errorMessage}" class="alert alert-danger">
-                                        <p th:text="${errorMessage}"></p>
-                                    </div>
-                                    <div th:if="${errorMessageDelete}" class="alert alert-danger">
-                                        <p th:text="${errorMessageDelete}"></p>
-                                    </div>
+                                <p class="commentaire-description" th:text="${commentaire.description}"></p>
+                                <div class="commentaire-buttons mt-3">
+                                    <a th:href="@{/commentaires/{commentaireId}/edit(commentaireId=${commentaire.id})}" class="btn btn-secondary btn-sm">Modifier</a>
+                                    <button class="btn btn-danger btn-delete-commentaire btn-sm" th:data-commentaire-id="${commentaire.id}" onclick="confirmDeleteCommentaire(${commentaire.id})">Supprimer</button>
                                 </div>
                             </div>
                         </li>
@@ -83,19 +59,14 @@
                 <!-- Formulaire de création de commentaires -->
                 <div th:if="${!isHomePage}">
                     <h3 class="title-bar text-center mb-4">Ajouter un commentaire :</h3>
-                    <form th:action="@{'/articles/' + ${article.id} + '/commentaires'}" th:object="${commentaire}"
-                          method="post" th:id="form-create-commentaire" data-article-id="${article.id}">
+                    <form th:action="@{'/articles/' + ${article.id} + '/commentaires'}" th:object="${commentaire}" method="post" th:id="form-create-commentaire" data-article-id="${article.id}">
                         <input type="hidden" name="id_article" th:value="${article.id}"/>
                         <input type="hidden" name="user" th:value="${#authentication.principal}"/>
-
                         <div class="mb-3">
                             <label for="description" class="form-label">Description:</label>
-                            <textarea id="description" name="description" class="form-control"
-                                      th:field="*{description}"></textarea>
-                            <span class="text-danger" th:if="${#fields.hasErrors('description')}"
-                                  th:errors="*{description}"></span>
+                            <textarea id="description" name="description" class="form-control" th:field="*{description}"></textarea>
+                            <span class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
                         </div>
-
                         <button type="submit" class="btn btn-primary">Ajouter un commentaire</button>
                     </form>
                 </div>
@@ -105,9 +76,6 @@
 </div>
 <script src="../../static/motifs.js" th:src="@{/motifs.js}" type="module"></script>
 <script src="../../static/articles.js" th:src="@{/articles.js}" type="module"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

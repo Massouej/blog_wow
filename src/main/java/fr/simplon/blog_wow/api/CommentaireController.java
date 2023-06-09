@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.security.Principal;
@@ -77,7 +78,7 @@ public class CommentaireController {
      * Affiche le formulaire de modification d'un commentaire.
      *
      * @param commentaireId L'identifiant du commentaire à modifier.
-     * @param model Le modèle Thymeleaf.
+     * @param model         Le modèle Thymeleaf.
      * @return La page de modification d'un commentaire.
      */
     @GetMapping("/commentaires/{commentaireId}/edit")
@@ -102,7 +103,8 @@ public class CommentaireController {
      */
     @PostMapping("/commentaires/{commentaireId}/edit")
     public String updateCommentaire(@PathVariable Long commentaireId,
-                                    @ModelAttribute("commentaire") Commentaire updatedCommentaire) {
+                                    @ModelAttribute("commentaire") Commentaire updatedCommentaire,
+                                    RedirectAttributes redirectAttributes) {
         Optional<Commentaire> commentaire = mCommentaireRepository.findById(commentaireId);
         if (commentaire.isPresent()) {
             Commentaire existingCommentaire = commentaire.get();
@@ -117,7 +119,8 @@ public class CommentaireController {
                 mCommentaireRepository.save(existingCommentaire);
                 return "redirect:/fragments/articles/" + existingCommentaire.getArticle().getId();
             } else {
-                throw new AccessDeniedException("Vous n'êtes pas autorisé à modifier ce commentaire.");
+                redirectAttributes.addFlashAttribute("errorMessage", "Vous n'êtes pas autorisé à modifier ce commentaire.");
+                return "redirect:/fragments/articles/" + existingCommentaire.getArticle().getId();
             }
         } else {
             throw new RecordNotFoundException(commentaireId);
@@ -125,6 +128,13 @@ public class CommentaireController {
     }
 
 
+    /**
+     * Supprime un commentaire spécifié par son identifiant.
+     *
+     * @param commentaireId      L'identifiant du commentaire à supprimer.
+     * @return La redirection vers la page de l'article associé au commentaire.
+     * @throws RecordNotFoundException Si le commentaire spécifié n'existe pas.
+     */
 
     @DeleteMapping("/commentaires/{commentaireId}/delete")
     @ApiResponse(responseCode = "200", description = "La ressource n'existe pas, requête ignorée.")
@@ -150,12 +160,15 @@ public class CommentaireController {
         }
     }
 
+
     /**
      * Signale un commentaire.
      *
      * @param commentaireId L'identifiant du commentaire à signaler.
      * @return Redirige vers la page des commentaires de l'article.
      */
+   /* Evolution possible
+
     @PostMapping("/commentaires/{commentaireId}/flag")
     public String flagCommentaire(@PathVariable Long commentaireId) {
         Optional<Commentaire> commentaire = mCommentaireRepository.findById(commentaireId);
@@ -168,7 +181,7 @@ public class CommentaireController {
         } else {
             throw new RecordNotFoundException(commentaireId);
         }
-    }
+    }*/
 
 
 }

@@ -68,8 +68,12 @@
                                                         <button class="btn btn-danger btn-delete-commentaire btn-sm"
                                                                 th:data-commentaire-id="${commentaire.id}" onclick="confirmDeleteCommentaire(${commentaire.id})">Supprimer
                                                         </button>
-                                                        <div id="error-message-${commentaire.id}" class="alert alert-danger" style="display: none;"></div>
-
+                                                        <div th:if="${errorMessage}" class="alert alert-danger">
+                                                            <p th:text="${errorMessage}"></p>
+                                                        </div>
+                                                        <div th:if="${errorMessageDelete}" class="alert alert-danger">
+                                                            <p th:text="${errorMessageDelete}"></p>
+                                                        </div>
                                                     </div>
 
                                                 </div>

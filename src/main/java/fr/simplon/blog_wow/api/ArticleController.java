@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * Contrôleur CRUD pour les articles.
  */
-@Controller
+@RestController
 @RequestMapping("/api")
 public class ArticleController {
     private ArticleRepository mRepository;

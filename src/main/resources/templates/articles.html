@@ -68,12 +68,6 @@
                                                                 onclick="confirmDeleteCommentaire(${commentaire.id})">
                                                             Supprimer
                                                         </button>
-                                                        <div th:if="${errorMessage}" class="alert alert-danger">
-                                                            <p th:text="${errorMessage}"></p>
-                                                        </div>
-                                                        <div th:if="${errorMessageDelete}" class="alert alert-danger">
-                                                            <p th:text="${errorMessageDelete}"></p>
-                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -82,6 +76,12 @@
                                     </div>
                                     <div th:if="${article.commentaires.size() == 0}">
                                         <p class="text-center">Aucun commentaire pour cet article.</p>
+                                    </div>
+                                    <div th:if="${errorMessage}" class="alert alert-danger">
+                                        <p th:text="${errorMessage}"></p>
+                                    </div>
+                                    <div th:if="${errorMessageDelete}" class="alert alert-danger">
+                                        <p th:text="${errorMessageDelete}"></p>
                                     </div>
                                     <h3 class="title-bar text-center mt-4">Ajouter un commentaire :</h3>
                                     <form th:action="@{'/articles/' + ${article.id} + '/commentaires'}"

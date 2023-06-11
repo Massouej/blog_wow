@@ -55,6 +55,12 @@
                 <div th:if="${article.commentaires.size() == 0}">
                     <p class="text-center">Aucun commentaire pour cet article.</p>
                 </div>
+                <div th:if="${errorMessage}" class="alert alert-danger">
+                    <p th:text="${errorMessage}"></p>
+                </div>
+                <div th:if="${errorMessageDelete}" class="alert alert-danger">
+                    <p th:text="${errorMessageDelete}"></p>
+                </div>
 
                 <!-- Formulaire de création de commentaires -->
                 <div th:if="${!isHomePage}">

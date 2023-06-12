@@ -60,9 +60,17 @@ p, span, div {
     margin-top: 10px;
     background-color: white;
 }
+/* CSS Commentaire */
+
 
 .commentaires-section {
     margin-top: 20px;
+}
+
+.list-group-item {
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
 }
 
 #header {

@@ -15,6 +15,8 @@ Thymeleaf, Validation, Spring Web, Spring Boot Security et Spring Data JPA.
 
 ## Langages et Framework utilisés
 
+![Spring Boot Badge](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&logoColor=fff&style=for-the-badge)
+
 ![Image](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 
 ![Image](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
@@ -33,7 +35,7 @@ Thymeleaf, Validation, Spring Web, Spring Boot Security et Spring Data JPA.
 
 ![Image](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
 
-![Spring Boot Badge](https://img.shields.io/badge/Spring%20Boot-6DB33F?logo=springboot&logoColor=fff&style=for-the-badge)
+
 
 --------
 
@@ -138,4 +140,4 @@ Ces objets sont ensuite ajoutés à une liste fictive articles.
 Le comportement du mock mRepository est défini pour renvoyer la liste articles lorsque la méthode findAll() est appelée. 
 Nous appelons la méthode articles() de notre ArticleController pour obtenir le résultat, puis nous vérifions la taille de la liste, l'ID, le titre, la description, etc. de chaque article.
 
-Cela nous permet de vérifier si la méthode articles() renvoie bien la liste d'articles attendue en utilisant le mock mRepository
+Cela nous permet de vérifier si la méthode articles() renvoie bien la liste d'articles attendue en utilisant le mock mRepository.

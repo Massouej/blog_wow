@@ -1,3 +1,15 @@
+
+/* Pour les titres */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+/* Pour le texte */
+p, span, div {
+    font-family: 'Montserrat', sans-serif;
+}
+
+
 /* CSS nav bar logo */
 
 .bg-light {

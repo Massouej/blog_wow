@@ -46,11 +46,15 @@ Lorsqu'un utilisateur clique sur "Lire la suite", il lui sera demandé de s'iden
 
 ![Article](https://zupimages.net/up/23/24/tjva.png)
 
+------
+
 ![AddCommentaire](https://zupimages.net/up/23/24/ewnp.png)
 
 Il a la possibilité de modifier ou supprimer uniquement les commentaires qu'il a créés lui-même.
 
 ![UpdateCommentKo](https://zupimages.net/up/23/24/dqy7.png)
+
+-----
 
 **2. Créer un article**
 
@@ -66,7 +70,11 @@ Ensuite, il sera redirigé vers la page d'accueil où il pourra constater la mis
 
 ![AddArticle](https://zupimages.net/up/23/24/6egv.png)
 
+------
+
 ![AddArticleOk](https://zupimages.net/up/23/24/q6r8.png)
+
+-----
 
 **3. Modifier / Supprimer un article**
 

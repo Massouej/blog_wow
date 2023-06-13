@@ -26,8 +26,8 @@ export function formatTime(date) {
 }
 
 /**
- * Formate une date au format "dd/MM/yyyy <sep> HH:mm:ss où <sep> est un caractère (ou une chaîne de caractère)
- * de séparation.
+ * Formate une date au format "dd/MM/yyyy <sep> HH:mm:ss où <sep> est un caractère
+ * (ou une chaîne de caractère) de séparation.
  *
  * @param {Date} date La date à formater.
  * @param {string} sep - Un séparateur entre la date et l'heure.

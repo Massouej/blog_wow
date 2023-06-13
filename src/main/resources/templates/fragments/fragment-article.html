@@ -63,7 +63,7 @@
                 </div>
 
                 <!-- Formulaire de création de commentaires -->
-                <div th:if="${!isHomePage}">
+                <div th:unless="${isHomePage}">
                     <h3 class="title-bar text-center mb-4">Ajouter un commentaire :</h3>
                     <form th:action="@{'/articles/' + ${article.id} + '/commentaires'}" th:object="${commentaire}" method="post" th:id="form-create-commentaire" data-article-id="${article.id}">
                         <input type="hidden" name="id_article" th:value="${article.id}"/>
